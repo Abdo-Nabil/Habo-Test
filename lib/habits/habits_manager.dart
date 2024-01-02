@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:file_picker/file_picker.dart';
@@ -12,6 +13,8 @@ import 'package:habo/model/habit_data.dart';
 import 'package:habo/model/habo_model.dart';
 import 'package:habo/notifications.dart';
 import 'package:habo/statistics/statistics.dart';
+
+import '../model/data_model.dart';
 
 class HabitsManager extends ChangeNotifier {
   final HaboModel _haboModel = HaboModel();
@@ -157,7 +160,37 @@ class HabitsManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  addEvent(int id, DateTime dateTime, List event) {
+  addEvent(BuildContext context, int id, DateTime dateTime, List event) async {
+    late BuildContext dialogContext;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) {
+          dialogContext = ctx;
+          return const AlertDialog(
+              title: Text('Loading...'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                ],
+              ));
+        });
+    //
+    // Check internet connection
+    // Add try-catch block and handle failures and exceptions
+    debugPrint('######################## id: $id');
+    final DayType type = event[0];
+    final DataModel dataModel = DataModel(
+        id: id,
+        dateTime: dateTime.toIso8601String(),
+        event: [type.name, event[1]]);
+    //
+    CollectionReference db = FirebaseFirestore.instance.collection('data');
+    await db.add(dataModel.toMap());
+    // await Future.delayed(const Duration(seconds: 3));
+    //
+    Navigator.pop(dialogContext);
     _haboModel.insertEvent(id, dateTime, event);
   }
 

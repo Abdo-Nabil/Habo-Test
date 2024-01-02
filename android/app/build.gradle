@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdk flutter.compileSdkVersion
+    compileSdk 34
     ndkVersion '25.1.8937393'
 
     compileOptions {
@@ -51,7 +51,7 @@ android {
     defaultConfig {
         applicationId "com.pavlenko.Habo"
         minSdkVersion 21
-        compileSdk 33
+        compileSdk 34
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -71,6 +71,12 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled true
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
         }
     }
 }

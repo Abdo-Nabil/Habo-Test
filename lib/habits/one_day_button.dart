@@ -127,13 +127,13 @@ class OneDayButton extends StatelessWidget {
                 onTap: () {
                   parent.setSelectedDay(date);
                 },
-                onChanged: (value) {
+                onChanged: (value) async {
                   if (value != null) {
                     if (value.key == const Key('Check') ||
                         value.key == const Key('Fail') ||
                         value.key == const Key('Skip')) {
-                      Provider.of<HabitsManager>(context, listen: false)
-                          .addEvent(id, date, [
+                      await Provider.of<HabitsManager>(context, listen: false)
+                          .addEvent(context, id, date, [
                         DayType.values[icons
                             .indexWhere((element) => element.key == value.key)],
                         comment
@@ -159,7 +159,8 @@ class OneDayButton extends StatelessWidget {
                     } else {
                       if (comment != "") {
                         Provider.of<HabitsManager>(context, listen: false)
-                            .addEvent(id, date, [DayType.clear, comment]);
+                            .addEvent(
+                                context, id, date, [DayType.clear, comment]);
                         parent.events[date] = [DayType.clear, comment];
                       } else {
                         Provider.of<HabitsManager>(context, listen: false)
@@ -218,7 +219,7 @@ class OneDayButton extends StatelessWidget {
       btnCancelOnPress: () {},
       btnOkOnPress: () {
         Provider.of<HabitsManager>(context, listen: false).addEvent(
-            id, date, [DayType.values[index], commentController.text]);
+            context, id, date, [DayType.values[index], commentController.text]);
         parent.events[date] = [DayType.values[index], commentController.text];
         callback();
       },
