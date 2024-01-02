@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,8 @@ import 'package:habo/notifications.dart';
 import 'package:habo/settings/settings_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:window_size/window_size.dart';
+
+import 'firebase_options.dart';
 
 void main() {
   addLicenses();
@@ -32,6 +35,12 @@ class _HaboState extends State<Habo> {
   final _habitManager = HabitsManager();
   late AppRouter _appRouter;
 
+  _initFirebase() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
   @override
   void initState() {
     if (Platform.isLinux || Platform.isMacOS) {
@@ -50,6 +59,7 @@ class _HaboState extends State<Habo> {
       settingsManager: _settingsManager,
       habitsManager: _habitManager,
     );
+    _initFirebase();
     super.initState();
   }
 
